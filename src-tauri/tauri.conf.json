@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "music-player",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "tauri": {
     "allowlist": {
@@ -17,6 +17,7 @@
       },
       "window": {
         "setAlwaysOnTop": true,
+        "setPosition": true,
         "setSize": true
       },
       "path": {
@@ -71,7 +72,9 @@
         "resizable": false,
         "alwaysOnTop": false,
         "width": 400,
-        "height": 640
+        "height": 655,
+        "x": 1125,
+        "y": 130
       }
     ]
   }

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Icon from "./lib/icons/Icon.svelte";
   import { dialog, invoke, window } from "@tauri-apps/api";
+  import { appWindow } from "@tauri-apps/api/window";
   import { audioDir } from "@tauri-apps/api/path";
   import { convertFileSrc } from "@tauri-apps/api/tauri";
   import {
@@ -132,15 +133,20 @@
   // set always-on-top
   async function setPin(): void {
     isPin = !isPin;
-    await window.appWindow.setAlwaysOnTop(isPin);
+    await appWindow.setAlwaysOnTop(isPin);
   }
 
   // toggle playlist
   async function togglePlaylist(): void {
     isShow = !isShow;
-    isShow
-      ? await window.appWindow.setSize(new window.LogicalSize(400, 640))
-      : await window.appWindow.setSize(new window.LogicalSize(400, 150));
+
+    if (isShow) {
+      await appWindow.setPosition(new window.LogicalPosition(1125, 130));
+      await appWindow.setSize(new window.LogicalSize(400, 655));
+    } else {
+      await appWindow.setPosition(new window.LogicalPosition(1125, 640));
+      await appWindow.setSize(new window.LogicalSize(400, 150));
+    }
   }
 
   // set progressbar position
@@ -184,16 +190,16 @@
       <img
         src={`data:${$currentTrack.image.mime_type};base64,${$currentTrack.image.data}`}
         alt=""
-        class="object-cover object-top w-full h-32 brightness-50" />
+        class="h-36 w-full object-cover object-center brightness-50" />
     {:else}
       <img
         src="./assets/default.jpg"
         alt=""
-        class="object-cover object-top w-full h-32 brightness-50" />
+        class="h-36 w-full object-cover object-center brightness-50" />
     {/if}
 
-    <!-- image container -->
-    <div class="absolute top-0 left-0 w-full h-full">
+    <!-- music control -->
+    <div class="absolute top-0 left-0 h-full w-full">
       <!-- pin -->
       <button on:click={() => setPin()} class="absolute top-2 right-2">
         <Icon
@@ -204,11 +210,11 @@
       </button>
 
       <!-- title and artist -->
-      <div class=" text-center pt-3">
-        <div class="text-xl font-light text-white">
+      <div class=" pt-3 text-center">
+        <div class="truncate text-xl font-light text-white">
           <p>{$currentTrack.title ?? $currentTrack.filename ?? "-"}</p>
         </div>
-        <div class="text-xs font-bold text-white">
+        <div class="truncate text-xs font-bold text-white">
           <p>{$currentTrack.artist ?? "-"}</p>
         </div>
       </div>
@@ -267,11 +273,11 @@
 
         <!-- progressbar -->
         <div
-          class="h-[4px] bg-[#784c1d]/50 w-full cursor-pointer"
+          class="h-1 w-full cursor-pointer bg-[#784c1d]/50"
           bind:this={currentTimeTag}
           on:click={(e) => seekTo(e)}>
           <div
-            class="bg-[#ffcc22] h-[4px] cursor-pointer"
+            class="h-1 cursor-pointer bg-[#ffcc22]"
             style="width:{progress}%" />
         </div>
       </div>
@@ -280,24 +286,24 @@
 
   <!-- playlist -->
   {#if isShow}
-    <div class="w-full bg-[#333333] p-2 mt-3 space-y-1">
+    <div class="mt-3 w-full space-y-1 bg-[#333333] p-2">
       <!-- search -->
       <div
-        class="flex items-center justify-between bg-[#1f1f1f] py-1.5 px-2 focus-within:ring-1 focus-within:ring-[#ffcc22] rounded-md space-x-2">
+        class="flex items-center justify-between space-x-2 rounded-md bg-[#1f1f1f] py-1.5 px-2 focus-within:ring-1 focus-within:ring-[#ffcc22]">
         <input
           bind:value={val}
           type="text"
           placeholder="type to search"
-          class="w-full bg-transparent border-none text-stone-300 focus:outline-none" />
+          class="w-full border-none bg-transparent text-stone-300 focus:outline-none" />
 
-        <Icon name="search" class="w-5 h-5 text-stone-300" />
+        <Icon name="search" class="h-5 w-5 text-stone-300" />
       </div>
 
       <div class="flex justify-end">
         <!-- add -->
         <button
           on:click={() => openDialog()}
-          class="text-xs font-bold text-stone-300 hover:text-[#ffcc22] px-1"
+          class="px-1 text-xs font-bold text-stone-300 hover:text-[#ffcc22]"
           >Add</button>
       </div>
 
@@ -309,15 +315,15 @@
         class="h-[26rem] overflow-y-auto pl-2 scrollbar-thin scrollbar-thumb-stone-400">
         {#each $filteredMusics as music}
           <article
-            class="flex items-baseline space-x-2 cursor-pointer"
+            class="flex cursor-pointer items-baseline space-x-2"
             on:click={() => setCurrentTrack(music)}>
             <div
-              class="text-sm {$currentTrack.path === music.path
+              class="truncate text-sm {$currentTrack.path === music.path
                 ? 'text-[#ffcc22]'
                 : 'text-stone-300'} ">
               {music.title ?? music.filename}
             </div>
-            <div class="text-xs font-bold text-stone-400">
+            <div class="truncate text-xs font-bold text-stone-400">
               {music.artist ?? ""}
             </div>
           </article>
