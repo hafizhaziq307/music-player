@@ -8,7 +8,7 @@
     "start": "sirv public --no-clear",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "tauri": "tauri",
-    "watch": "npx tailwindcss -i ./public/input.css -o ./public/output.css --watch"
+    "watch": "npx tailwindcss -i ./public/input.css -o ./public/output.css --watch --minify"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
