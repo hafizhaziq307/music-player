@@ -1,5 +1,5 @@
-#music-player
- a dsektop application used to play local music file
+# music-player
+ a desktop application used to play local music file
  
 <img src="./res/output.png" alt="music-player" >
 
