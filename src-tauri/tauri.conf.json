@@ -1,31 +1,17 @@
 {
-  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:8080",
-    "distDir": "../public"
+    "beforeBuildCommand": "npm run build",
+    "devPath": "http://localhost:1420",
+    "distDir": "../dist"
   },
   "package": {
     "productName": "music-player",
-    "version": "0.1.1"
+    "version": "0.2.0"
   },
   "tauri": {
     "allowlist": {
-      "dialog": {
-        "open": true
-      },
-      "window": {
-        "setAlwaysOnTop": true,
-        "setPosition": true,
-        "setSize": true
-      },
-      "path": {
-        "all": true
-      },
-      "protocol": {
-        "all": true
-      }
+      "all": true
     },
     "bundle": {
       "active": true,
@@ -68,13 +54,16 @@
     },
     "windows": [
       {
-        "title": "music player",
-        "resizable": false,
-        "alwaysOnTop": false,
-        "width": 400,
-        "height": 655,
-        "x": 1125,
-        "y": 130
+        "fullscreen": false,
+        "height": 650,
+        "width": 900,
+        "minHeight": 650,
+        "minWidth": 900,
+        "decorations": false,
+        "resizable": true,
+        "title": "Music Player",
+        "transparent": true
+        
       }
     ]
   }

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer components {
-  * {
-    user-select: none;
+    * {
+      user-select: none;
+    }
   }
-}

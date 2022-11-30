@@ -1,20 +1,7 @@
-# music-player
- a desktop application used to play local music file
- 
-<img src="./res/output.png" alt="music-player" >
+# Tauri + React + Typescript
 
----
+This template should help get you started developing with Tauri, React and Typescript in Vite.
 
-## Stack
-It is created using those amazing technologies:
-- [Svelte](https://svelte.dev/)
-- [Tailwind](https://tailwindcss.com/)
-- [Tauri](https://tauri.studio/)
-- And many others!
+## Recommended IDE Setup
 
----
-
-## License
->You can check out the full license [here](https://github.com/hafizhaziq307/music-player/blob/main/LICENSE)
-
-This project is licensed under the terms of the **MIT** license.
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)

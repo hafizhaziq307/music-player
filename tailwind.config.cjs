@@ -1,12 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.svelte", "./public/index.html"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./index.html"
+  ],  
   theme: {
     extend: {},
   },
   plugins: [require("tailwind-scrollbar")],
-
   variants: {
     scrollbar: ["rounded"],
   },
-};
+}
