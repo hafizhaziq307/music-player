@@ -1,22 +1,20 @@
-import { useEffect, useRef, useState } from "react";
 import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
 import { dialog } from "@tauri-apps/api";
 import { audioDir } from "@tauri-apps/api/path";
-
+import { useEffect, useRef, useState } from "react";
 import { FastAverageColor } from "fast-average-color";
 
+import { isEmpty } from "./helpers";
+import default_thumbnail from "./assets/img/default_thumbnail.png";
 import { WindowBar } from "./components/WindowBar";
 import { Track } from "./components/Track";
 import { Volume } from "./components/audio_controls/Volume";
 import { ShuffleTrack } from "./components/audio_controls/ShuffleTrack";
-
-import default_thumbnail from "./assets/img/default_thumbnail.png";
 import { NextTrack } from "./components/audio_controls/NextTrack";
 import { PreviousTrack } from "./components/audio_controls/PreviousTrack";
 import { Repeat } from "./components/audio_controls/Repeat";
 import { AddTrack } from "./components/audio_controls/AddTrack";
 import { PlayPauseTrack } from "./components/audio_controls/PlayPauseTrack";
-import { isEmpty } from "./helpers";
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
