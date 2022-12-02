@@ -1,7 +1,7 @@
 # music-player
-play mp3 file nicely
+A music player to listen to music. Support mp3 file only.
  
-<img src="./res/output.png" alt="music_player" width="60%" height="60%" >
+<img src="./res/output.png" alt="music_player" width="70%" height="70%" >
 
 ---
 
