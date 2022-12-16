@@ -1,5 +1,3 @@
-import { isEmpty } from "../helpers";
-
 export const Track = (props: any) => {
   return (
     <article
@@ -44,7 +42,7 @@ export const Track = (props: any) => {
             : "col-span-8 font-light"
         }`}
       >
-        {isEmpty(props.track.title) ? props.track.filename : props.track.title}
+        {!props.track.title ? props.track.filename : props.track.title}
       </div>
 
       <div

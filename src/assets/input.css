@@ -6,4 +6,8 @@
     * {
       user-select: none;
     }
+
+    .scrollbar-component {
+        @apply scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-rounded-full scrollbar-thumb-rounded-full;
+    }
   }

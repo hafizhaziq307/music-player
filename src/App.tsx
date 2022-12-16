@@ -3,8 +3,8 @@ import { dialog } from "@tauri-apps/api";
 import { audioDir } from "@tauri-apps/api/path";
 import { useEffect, useRef, useState } from "react";
 import { FastAverageColor } from "fast-average-color";
+import { Wave } from "@foobar404/wave";
 
-import { isEmpty } from "./helpers";
 import default_thumbnail from "./assets/img/default_thumbnail.png";
 import { WindowBar } from "./components/WindowBar";
 import { Track } from "./components/Track";
@@ -35,19 +35,22 @@ function App() {
     },
   });
   const [currentColor, setCurrentColor] = useState({
-    background: "",
-    text: "",
+    background: "#374151",
+    text: "white",
   });
 
   const audioRef: any = useRef();
+  const canvasRef: any = useRef();
   const currentTimeRef: any = useRef();
   const thumbnailRef: any = useRef();
 
   useEffect(() => {
     audioRef.current.volume = 0.01 * volume;
-  }, [volume]);
+  }, [volume]); // setVolume
 
   useEffect(() => {
+    if (!currentTrack.path) return;
+
     setProgress(0);
     audioRef.current.src = convertFileSrc(currentTrack.path);
     playTrack();
@@ -56,21 +59,43 @@ function App() {
     getDominantColor(thumbnailRef.current);
   }, [currentTrack]); // setCurrentTrack
 
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    displayAudioVisualizer();
+  }, [audioRef.current]); // audio tag
+
   const getDominantColor = (imgElement: any) => {
     const fac = new FastAverageColor();
 
     fac
       .getColorAsync(imgElement, { algorithm: "simple", mode: "precision" })
       .then((color) => {
-        let textcolor = color.isDark ? "#fff" : "#000";
+        let textcolor = color.isDark ? "white" : "black";
         setCurrentColor({
           background: color.hex,
           text: textcolor,
         });
       })
       .catch((e) => {
-        console.log(e);
+        alert(e);
       });
+  };
+
+  const displayAudioVisualizer = () => {
+    const wave = new Wave(audioRef.current, canvasRef.current);
+    wave.addAnimation(
+      new wave.animations.Lines({
+        lineWidth: 4,
+        lineColor: "white",
+        count: 30,
+        frequencyBand: "highs",
+        glow: { color: "black", strength: 5 },
+        rounded: true,
+        center: true,
+        mirroredY: true,
+      })
+    );
   };
 
   const openDialog = async () => {
@@ -110,14 +135,14 @@ function App() {
   };
 
   const playPauseTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     !isPlaying ? playTrack() : pauseTrack();
   };
 
   // play track
   const playTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     audioRef.current.play();
     setIsPlaying(true);
@@ -125,7 +150,7 @@ function App() {
 
   // prev track
   const previousTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     let tempCurrentIndex = currentIndex;
     tempCurrentIndex--;
@@ -136,7 +161,7 @@ function App() {
 
   // loop track
   const loopTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     let tempIsLooping = !isLooping;
     setIsLooping(tempIsLooping);
@@ -144,14 +169,14 @@ function App() {
   };
 
   const shuffleTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     setIsShuffling(!isShuffling);
   };
 
   // pause track
   const pauseTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     audioRef.current.pause();
     setIsPlaying(false);
@@ -159,7 +184,7 @@ function App() {
 
   // next track
   const nextTrack = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     let tempCurrentIndex = currentIndex;
     tempCurrentIndex++;
@@ -178,7 +203,7 @@ function App() {
 
   // set progressbar position
   const seekTo = (event: any) => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     const seekPosition = event.clientX / currentTimeRef.current.clientWidth;
     audioRef.current.currentTime = audioRef.current.duration * seekPosition;
@@ -188,7 +213,7 @@ function App() {
 
   // update progressbar
   const seekUpdate = () => {
-    if (currentTrack.filename === "") return;
+    if (!currentTrack.filename) return;
 
     setProgress(
       (audioRef.current.currentTime / audioRef.current.duration) * 100
@@ -220,21 +245,27 @@ function App() {
           ref={audioRef}
           onEnded={handleAudioEnded}
           onTimeUpdate={seekUpdate}
+          crossOrigin="anonymous"
           hidden
         />
 
         <div className="grid h-full grid-cols-3 gap-3 p-3">
-          <section className="grid  place-content-center rounded-2xl">
+          <section className=" grid place-content-center space-y-4 rounded-2xl">
             <img
               ref={thumbnailRef}
               src={
-                isEmpty(currentTrack.image.data)
+                !currentTrack.image.data
                   ? default_thumbnail
                   : `data:${currentTrack.image.mime_type};base64,${currentTrack.image.data}`
               }
               alt=""
-              className="aspect-square w-[15rem] rounded-lg object-cover object-center lg:w-[20rem]"
+              className="mx-auto aspect-square w-[15rem] rounded-lg object-cover object-center lg:w-[20rem]"
             />
+
+            <canvas
+              ref={canvasRef}
+              className="mx-auto h-[4rem] w-[15rem] lg:w-[20rem]"
+            ></canvas>
           </section>
 
           <section className="col-span-2 w-full space-y-4 rounded-2xl">
@@ -243,23 +274,7 @@ function App() {
               <AddTrack openDialog={openDialog} currentColor={currentColor} />
             </header>
 
-            {/* <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full rounded-lg bg-[#282C3C] px-4 py-2 text-white"
-              />
-              <svg
-                className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-white"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-              >
-                <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
-              </svg>
-            </div> */}
-
-            <div className="h-[70vh] space-y-2 overflow-y-auto pr-3 scrollbar-thin scrollbar-thumb-gray-700 lg:h-[75vh]">
+            <div className="scrollbar-component h-[70vh] space-y-2 overflow-y-auto pr-3 lg:h-[75vh]">
               {tracks.map((track: any, i: number) => (
                 <Track
                   key={track.filename}
@@ -294,12 +309,10 @@ function App() {
         <section className="grid h-full grid-cols-3 items-center gap-4 px-3">
           <div>
             <div className="truncate text-lg font-light text-white">
-              {isEmpty(currentTrack.title)
-                ? currentTrack.filename
-                : currentTrack.title}
+              {!currentTrack.title ? currentTrack.filename : currentTrack.title}
             </div>
             <div className="h-5 truncate text-xs font-medium text-white">
-              {isEmpty(currentTrack.artist) ? "-" : currentTrack.artist}
+              {!currentTrack.artist ? "-" : currentTrack.artist}
             </div>
           </div>
 
