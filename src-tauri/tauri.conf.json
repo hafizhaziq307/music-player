@@ -3,11 +3,12 @@
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "distDir": "../dist",
+    "withGlobalTauri": false
   },
   "package": {
     "productName": "music-player",
-    "version": "0.2.1"
+    "version": "0.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -15,12 +16,6 @@
     },
     "bundle": {
       "active": true,
-      "category": "Utility",
-      "copyright": "© 2022 hafiz haziq",
-      "deb": {
-        "depends": []
-      },
-      "externalBin": [],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -28,23 +23,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "hafizhaziq.dev.music-player",
-      "longDescription": "",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
-      }
+      "identifier": "com.tauri.dev",
+      "targets": "all"
     },
     "security": {
       "csp": null
@@ -63,7 +43,6 @@
         "resizable": true,
         "title": "Music Player",
         "transparent": true
-        
       }
     ]
   }

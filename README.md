@@ -8,7 +8,6 @@ A music player to listen to music. Support mp3 file only.
 ## Stack
 It is created using those amazing technologies:
 - [React](https://reactjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind](https://tailwindcss.com/)
 - [Tauri](https://tauri.studio/)
 - And many others!
