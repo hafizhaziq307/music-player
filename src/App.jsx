@@ -3,7 +3,7 @@ import { dialog } from "@tauri-apps/api";
 import { audioDir } from "@tauri-apps/api/path";
 import { useEffect, useRef, useState } from "react";
 // import { Wave } from "@foobar404/wave";
-import { prominent } from 'color.js';
+import { prominent } from "color.js";
 
 import default_thumbnail from "./assets/img/default_thumbnail.png";
 import { Track, WindowBar } from "./components";
@@ -16,6 +16,9 @@ import {
     ShuffleTrack,
     Volume,
 } from "./components/audio_controls";
+
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
 function App() {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -40,6 +43,13 @@ function App() {
         text: "white",
     });
 
+    const analyzer = new Analyzer({
+        numInputChannels: 1,
+        numOutputChannels: 1,
+        fftSize: 2048,
+        smoothingTimeConstant: 0.8,
+    });
+
     const audioRef = useRef();
     const canvasRef = useRef();
     const currentTimeRef = useRef();
@@ -57,22 +67,21 @@ function App() {
         playTrack();
         updateCurrentIndex();
 
-        prominent(thumbnailRef.current.src, { amount: 10 }).then(colors => {
+        prominent(thumbnailRef.current.src, { amount: 10 }).then((colors) => {
             const color = extractColor(colors);
             setCurrentColor({
                 background: color.vibrant,
                 text: color.isDark ? "white" : "black",
             });
-        })
-
-
-
+        });
     }, [currentTrack]); // setCurrentTrack
 
     useEffect(() => {
         if (!audioRef.current) return;
 
         displayAudioVisualizer();
+
+        audioInput.connect(analyzer.input);
     }, [audioRef.current]); // audio tag
 
     const extractColor = (colors) => {
@@ -101,13 +110,15 @@ function App() {
         const b = mostVibrantColor[2];
 
         const brightness = (299 * r + 587 * g + 114 * b) / 1000;
-        const hexVibrant = `#${((r << 16) + (g << 8) + b).toString(16).padStart(6, '0')}`;
+        const hexVibrant = `#${((r << 16) + (g << 8) + b)
+            .toString(16)
+            .padStart(6, "0")}`;
 
         return {
             vibrant: hexVibrant,
-            isDark: brightness < 128
+            isDark: brightness < 128,
         };
-    }
+    };
 
     const displayAudioVisualizer = () => {
         // const wave = new Wave(audioRef.current, canvasRef.current);
@@ -289,10 +300,14 @@ function App() {
                             className="mx-auto aspect-square w-[15rem] rounded-lg object-cover object-center lg:w-[20rem]"
                         />
 
-                        <canvas
+                        {/* <div ref={canvasRef} id="container" className="mx-auto h-[4rem] w-[15rem] lg:w-[20rem]"></div> */}
+
+                        <canvas id="audio-canvas"></canvas>
+
+                        {/* <canvas
                             ref={canvasRef}
                             className="mx-auto h-[4rem] w-[15rem] lg:w-[20rem]"
-                        ></canvas>
+                        ></canvas> */}
                     </section>
 
                     <section className="col-span-2 w-full space-y-4 rounded-2xl">
@@ -301,7 +316,7 @@ function App() {
                             <AddTrack openDialog={openDialog} currentColor={currentColor} />
                         </header>
 
-                        <div className="scrollbar-component h-[70vh] space-y-2 overflow-y-auto pr-3 lg:h-[75vh]">
+                        <SimpleBar className="h-[70vh] space-y-2 overflow-y-auto pr-3 lg:h-[75vh] ">
                             {tracks.map((track, i) => (
                                 <Track
                                     key={track.filename}
@@ -312,7 +327,7 @@ function App() {
                                     setCurrentTrack={setCurrentTrack}
                                 />
                             ))}
-                        </div>
+                        </SimpleBar>
                     </section>
                 </div>
             </main>
