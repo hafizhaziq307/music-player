@@ -1,6 +1,5 @@
 import { FaVolumeUp } from "react-icons/fa";
 
-
 export default function Volume(props) {
     return (
         <div className="flex items-center gap-3 justify-self-end">

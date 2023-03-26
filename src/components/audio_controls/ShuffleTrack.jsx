@@ -12,9 +12,9 @@ export default function ShuffleTrack(props) {
             }}
             className="rounded-sm p-1"
         >
-            <TbArrowsShuffle className="h-6 w-6" style={{
+            <TbArrowsShuffle style={{
                 color: props.isShuffling ? props.currentColor.text : "#fff",
-            }} />
+            }} className="h-6 w-6" />
         </button>
     );
 };

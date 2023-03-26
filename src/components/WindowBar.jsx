@@ -1,8 +1,19 @@
 import { appWindow } from "@tauri-apps/api/window";
 import logo from "../assets/img/logo.png";
 import { HiMinus, HiXMark, HiOutlineSquare2Stack } from "react-icons/hi2";
+import { getVersion } from '@tauri-apps/api/app';
+import { useState, useEffect } from "react";
 
 export default function WindowBar() {
+    const [appVersion, setAppVersion] = useState([]);
+
+    useEffect(() => {
+        const runAsyncFunc = async () => {
+            setAppVersion(await getVersion());
+        }
+        runAsyncFunc();
+    }, []);
+
     return (
         <header
             data-tauri-drag-region
@@ -16,7 +27,7 @@ export default function WindowBar() {
                 />
                 <div>
                     <div className="text-[.8rem] text-white">Music Player</div>
-                    <div className="text-[.6rem] font-light text-gray-400">0.3.0</div>
+                    <div className="text-[.6rem] font-light text-gray-400">{appVersion}</div>
                 </div>
             </section>
 

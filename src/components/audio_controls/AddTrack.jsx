@@ -4,7 +4,7 @@ export default function AddTrack(props) {
     return (
         <button
             title="Add Mp3"
-            className="rounded-sm py-1 px-1.5 text-xs"
+            className="rounded-sm py-1 px-1.5"
             style={{ backgroundColor: props.currentColor.background }}
             onClick={props.openDialog}
         >

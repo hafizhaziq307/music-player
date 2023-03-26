@@ -2,9 +2,7 @@ import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
 import { dialog } from "@tauri-apps/api";
 import { audioDir } from "@tauri-apps/api/path";
 import { useEffect, useRef, useState } from "react";
-// import { Wave } from "@foobar404/wave";
 import { prominent } from "color.js";
-
 import default_thumbnail from "./assets/img/default_thumbnail.png";
 import { Track, WindowBar } from "./components";
 import {
@@ -17,8 +15,8 @@ import {
     Volume,
 } from "./components/audio_controls";
 
-import SimpleBar from 'simplebar-react';
-import 'simplebar-react/dist/simplebar.min.css';
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
 
 function App() {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -43,15 +41,7 @@ function App() {
         text: "white",
     });
 
-    const analyzer = new Analyzer({
-        numInputChannels: 1,
-        numOutputChannels: 1,
-        fftSize: 2048,
-        smoothingTimeConstant: 0.8,
-    });
-
     const audioRef = useRef();
-    const canvasRef = useRef();
     const currentTimeRef = useRef();
     const thumbnailRef = useRef();
 
@@ -75,14 +65,6 @@ function App() {
             });
         });
     }, [currentTrack]); // setCurrentTrack
-
-    useEffect(() => {
-        if (!audioRef.current) return;
-
-        displayAudioVisualizer();
-
-        audioInput.connect(analyzer.input);
-    }, [audioRef.current]); // audio tag
 
     const extractColor = (colors) => {
         let mostVibrantColor;
@@ -118,22 +100,6 @@ function App() {
             vibrant: hexVibrant,
             isDark: brightness < 128,
         };
-    };
-
-    const displayAudioVisualizer = () => {
-        // const wave = new Wave(audioRef.current, canvasRef.current);
-        // wave.addAnimation(
-        //     new wave.animations.Lines({
-        //         lineWidth: 4,
-        //         lineColor: "white",
-        //         count: 30,
-        //         frequencyBand: "highs",
-        //         glow: { color: "black", strength: 5 },
-        //         rounded: true,
-        //         center: true,
-        //         mirroredY: false,
-        //     })
-        // );
     };
 
     const openDialog = async () => {
@@ -287,8 +253,8 @@ function App() {
                     hidden
                 />
 
-                <div className="grid h-full grid-cols-3 gap-3 p-3">
-                    <section className=" grid place-content-center space-y-4 rounded-2xl">
+                <div className="grid h-full grid-cols-3 gap-3 py-3 px-1">
+                    <section className=" grid place-content-center">
                         <img
                             ref={thumbnailRef}
                             src={
@@ -297,26 +263,23 @@ function App() {
                                     : `data:${currentTrack.image.mime_type};base64,${currentTrack.image.data}`
                             }
                             alt=""
-                            className="mx-auto aspect-square w-[15rem] rounded-lg object-cover object-center lg:w-[20rem]"
+                            className="aspect-square w-[15rem] rounded-lg object-cover object-center lg:w-[20rem]"
                         />
-
-                        {/* <div ref={canvasRef} id="container" className="mx-auto h-[4rem] w-[15rem] lg:w-[20rem]"></div> */}
-
-                        <canvas id="audio-canvas"></canvas>
-
-                        {/* <canvas
-                            ref={canvasRef}
-                            className="mx-auto h-[4rem] w-[15rem] lg:w-[20rem]"
-                        ></canvas> */}
                     </section>
 
-                    <section className="col-span-2 w-full space-y-4 rounded-2xl">
+                    <section className="col-span-2 w-full space-y-4">
                         <header className="flex justify-between">
                             <div className="text-xl text-white">Playlist</div>
                             <AddTrack openDialog={openDialog} currentColor={currentColor} />
                         </header>
 
-                        <SimpleBar className="h-[70vh] space-y-2 overflow-y-auto pr-3 lg:h-[75vh] ">
+                        <SimpleBar autoHide={false} className="h-[70vh] space-y-2 pr-4 lg:h-[75vh] ">
+                            <style>
+                                {`.simplebar-scrollbar:before {
+                                    background-color: ${currentColor.background};
+                                    width: 8px;
+                                }`}
+                            </style>
                             {tracks.map((track, i) => (
                                 <Track
                                     key={track.filename}

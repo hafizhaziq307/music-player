@@ -12,8 +12,8 @@ export default function Track(props) {
                     : {}
             }
             className={`grid cursor-pointer grid-cols-12 items-center gap-2 rounded-lg py-3 px-4 ${props.currentTrack.path === props.track.path
-                    ? ""
-                    : "text-white hover:bg-gray-800"
+                ? ""
+                : "text-white hover:bg-gray-800"
                 }`}
             onClick={() => props.setCurrentTrack(props.track)}
         >
@@ -31,8 +31,8 @@ export default function Track(props) {
 
             <div
                 className={`truncate ${props.currentTrack.path === props.track.path
-                        ? "col-span-7"
-                        : "col-span-8 font-light"
+                    ? "col-span-7"
+                    : "col-span-8 font-light"
                     }`}
             >
                 {!props.track.title ? props.track.filename : props.track.title}
