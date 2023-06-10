@@ -22,7 +22,7 @@ function App() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLooping, setIsLooping] = useState(false);
     const [isShuffling, setIsShuffling] = useState(false);
-    const [volume, setVolume] = useState(40);
+    const [volume, setVolume] = useState(50);
     const [progress, setProgress] = useState(0);
     const [tracks, setTracks] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,7 +42,6 @@ function App() {
     });
 
     const audioRef = useRef();
-    const currentTimeRef = useRef();
     const thumbnailRef = useRef();
 
     useEffect(() => {
@@ -53,6 +52,7 @@ function App() {
         if (!currentTrack.path) return;
 
         setProgress(0);
+
         audioRef.current.src = convertFileSrc(currentTrack.path);
         playTrack();
         updateCurrentIndex();
@@ -205,25 +205,6 @@ function App() {
         if (res !== -1) setCurrentIndex(res);
     };
 
-    // set progressbar position
-    const seekTo = (event) => {
-        if (!currentTrack.filename) return;
-
-        const seekPosition = event.clientX / currentTimeRef.current.clientWidth;
-        audioRef.current.currentTime = audioRef.current.duration * seekPosition;
-
-        seekUpdate();
-    };
-
-    // update progressbar
-    const seekUpdate = () => {
-        if (!currentTrack.filename) return;
-
-        setProgress(
-            (audioRef.current.currentTime / audioRef.current.duration) * 100
-        );
-    };
-
     // handle after audio ended
     const handleAudioEnded = () => {
         if (isShuffling) {
@@ -234,10 +215,27 @@ function App() {
         }
     };
 
-    // change volume
-    const changeVolume = (event) => {
-        setVolume(event.target.value);
-    };
+    function handleInput(event) {
+        if (!currentTrack.filename) return;
+
+        const rangeValue = event.target.value;
+
+        setProgress(rangeValue);
+        audioRef.current.currentTime = (rangeValue / 100) * audioRef.current.duration;
+    }
+
+    function handleTimeUpdate(event) {
+        if (!currentTrack.filename) return;
+
+        const audioElement = event.target;
+
+        let updatedProgress = (audioElement.currentTime / audioElement.duration) * 100;
+        if (isNaN(updatedProgress)) {
+            updatedProgress = 0;
+        }
+
+        setProgress(updatedProgress);
+    }
 
     return (
         <div className="flex min-h-screen w-full flex-col justify-between overflow-hidden rounded-xl bg-[#141C24]">
@@ -248,7 +246,7 @@ function App() {
                     controls
                     ref={audioRef}
                     onEnded={handleAudioEnded}
-                    onTimeUpdate={seekUpdate}
+                    onTimeUpdate={handleTimeUpdate}
                     crossOrigin="anonymous"
                     hidden
                 />
@@ -296,20 +294,7 @@ function App() {
             </main>
 
             <footer className="h-[5rem] w-full bg-[#141820]">
-                <div
-                    style={{ backgroundColor: currentColor.text }}
-                    className="relative h-1 w-full cursor-pointer"
-                    ref={currentTimeRef}
-                    onClick={seekTo}
-                >
-                    <div
-                        style={{
-                            width: progress + "%",
-                            backgroundColor: currentColor.background,
-                        }}
-                        className="absolute top-0 h-full"
-                    ></div>
-                </div>
+                <input type="range" title={progress} step={0.00001} min={0} max={100} value={progress} onInput={handleInput} className="rounded-full h-1.5 outline-none cursor-pointer w-full block" style={{ accentColor: `${currentColor.background}` }} />
 
                 <section className="grid h-full grid-cols-3 items-center gap-4 px-3">
                     <div>
@@ -344,7 +329,7 @@ function App() {
                         />
                     </div>
 
-                    <Volume changeVolume={changeVolume} volume={volume} />
+                    <Volume changeVolume={(event) => setVolume(event.target.value)} volume={volume} currentColor={currentColor} />
                 </section>
             </footer>
         </div>
