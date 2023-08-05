@@ -1,5 +1,4 @@
-use serde_json::{Value};
-use tauri;
+use serde_json::Value;
 use id3::{Tag, TagLike};
 use base64;
 

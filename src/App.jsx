@@ -1,5 +1,5 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
-import { dialog } from "@tauri-apps/api";
+import { open } from "@tauri-apps/api/dialog";
 import { audioDir } from "@tauri-apps/api/path";
 import { useEffect, useRef, useState } from "react";
 import { prominent } from "color.js";
@@ -103,7 +103,7 @@ function App() {
     };
 
     const openDialog = async () => {
-        const paths = await dialog.open({
+        const paths = await open({
             filters: [
                 {
                     name: "Mp3 file",

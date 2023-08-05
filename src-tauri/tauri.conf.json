@@ -11,7 +11,23 @@
 	},
 	"tauri": {
 		"allowlist": {
-			"all": true
+            "path": {
+                "all": true
+            },
+            "dialog": {
+                "open": true
+            },
+            "window": {
+                "maximize": true,
+                "unmaximize": true,
+                "minimize": true,
+                "close": true
+            },
+            "protocol": {
+                "assetScope": ["**"],
+                "all": true,
+                "asset": true
+              }
 		},
 		"bundle": {
 			"active": true,
