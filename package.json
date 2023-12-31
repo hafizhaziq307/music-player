@@ -11,22 +11,17 @@
     "watch": "npx tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/output.css --watch --minify"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.4.0",
-    "color.js": "^1.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.8.0",
-    "react-slider": "^2.0.4",
-    "simplebar-react": "^3.2.1"
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@tauri-apps/api": "^1.5.3",
+    "svrollbar": "^0.12.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.4.0",
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-react": "^3.0.0",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.27",
-    "tailwindcss": "^3.3.3",
-    "vite": "^4.0.0"
+    "@sveltejs/vite-plugin-svelte": "^2.4.2",
+    "@tauri-apps/cli": "^1.5.9",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "svelte": "^4.0.5",
+    "tailwindcss": "^3.4.0",
+    "vite": "^4.4.4"
   }
 }

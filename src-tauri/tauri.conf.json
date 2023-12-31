@@ -1,16 +1,17 @@
 {
-	"build": {
-		"beforeDevCommand": "npm run dev",
-		"beforeBuildCommand": "npm run build",
-		"devPath": "http://localhost:1420",
-		"distDir": "../dist"
-	},
-	"package": {
-		"productName": "music-player",
-		"version": "0.4.0"
-	},
-	"tauri": {
-		"allowlist": {
+    "build": {
+        "beforeDevCommand": "npm run dev",
+        "beforeBuildCommand": "npm run build",
+        "devPath": "http://localhost:1420",
+        "distDir": "../dist",
+        "withGlobalTauri": false
+    },
+    "package": {
+        "productName": "music-player",
+        "version": "0.4.0"
+    },
+    "tauri": {
+        "allowlist": {
             "path": {
                 "all": true
             },
@@ -24,63 +25,39 @@
                 "close": true
             },
             "protocol": {
-                "assetScope": ["**"],
+                "assetScope": [
+                    "**"
+                ],
                 "all": true,
                 "asset": true
-              }
-		},
-		"bundle": {
-			"active": true,
-			"category": "Utility",
-			"copyright": "© 2023 hafiz haziq",
-			"deb": {
-				"depends": []
-			},
-			"externalBin": [],
-			"icon": [
-				"icons/32x32.png",
-				"icons/128x128.png",
-				"icons/128x128@2x.png",
-				"icons/icon.icns",
-				"icons/icon.ico"
-			],
+            }
+        },
+        "bundle": {
+            "active": true,
+            "targets": "all",
 			"identifier": "hafizhaziq.dev.music-player",
-			"longDescription": "",
-			"macOS": {
-				"entitlements": null,
-				"exceptionDomain": "",
-				"frameworks": [],
-				"providerShortName": null,
-				"signingIdentity": null
-			},
-			"resources": [],
-			"shortDescription": "",
-			"targets": "all",
-			"windows": {
-				"certificateThumbprint": null,
-				"digestAlgorithm": "sha256",
-				"timestampUrl": ""
-			}
-		},
-		"security": {
-			"csp": null
-		},
-		"updater": {
-			"active": false
-		},
-		"windows": [
-			{
-				"fullscreen": false,
-				"height": 650,
-				"width": 900,
-				"minHeight": 650,
-				"minWidth": 900,
-				"decorations": false,
-				"resizable": true,
-				"title": "Music Player",
-				"transparent": true,
-				"center": true
-			}
-		]
-	}
+            "icon": [
+                "icons/32x32.png",
+                "icons/128x128.png",
+                "icons/128x128@2x.png",
+                "icons/icon.icns",
+                "icons/icon.ico"
+            ]
+        },
+        "security": {
+            "csp": null
+        },
+        "windows": [
+            {
+                "fullscreen": false,
+                "height": 650,
+                "width": 900,
+                "minHeight": 650,
+                "minWidth": 900,
+                "resizable": true,
+                "title": "Music Player",
+                "center": true
+            }
+        ]
+    }
 }
