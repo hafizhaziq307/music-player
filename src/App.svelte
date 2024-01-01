@@ -45,12 +45,23 @@
     $: if (!isEmpty(currentTrack.path)) {
         progress = 0;
         audioElement.src = convertFileSrc(currentTrack.path);
-        thumbnailElement.src = !currentTrack.image.data ? logo : `data:${currentTrack.image.mime_type};base64,${currentTrack.image.data}`
+        
+        const thumbnail = !currentTrack.image.data ? logo : `data:${currentTrack.image.mime_type};base64,${currentTrack.image.data}`;
+        thumbnailElement.src = thumbnail;
 
         playTrack();
         updateCurrentIndex();
 
         thumbnailElement.onload = function() {
+
+            if (thumbnail == logo) {
+                currentColor = {
+                    background: "#374151",
+                    text: "white",
+                };
+                return;
+            }
+
             const vibrant = new Vibrant(thumbnailElement);
             const swatches = vibrant.swatches();
 
@@ -61,7 +72,20 @@
                 background: vibrantColor,
                 text: textColor,
             };
+
         };
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: currentTrack.title ?? currentTrack.filename,
+            artist: currentTrack.artist ?? '',
+            artwork: [
+                {
+                    src: thumbnailElement.src,
+                    sizes: "512x512",
+                    type: !currentTrack.image.data ? 'image/png' : currentTrack.image.mime_type,
+                },
+            ],
+        });
     }
 
     // volume changes
@@ -120,13 +144,15 @@
             return;
         }
 
+        navigator.mediaSession.playbackState = 'playing';
+
         audioElement.play();
         isPlaying = true;
     };
 
     // prev track
     const previousTrack = () => {
-        if (isEmpty(currentTrack.filename)) {
+        if (isEmpty(currentTrack.filename) || tracks.length <= 1) {
             return;
         }
 
@@ -163,13 +189,15 @@
             return;
         }
 
+        navigator.mediaSession.playbackState = 'paused';
+
         audioElement.pause();
         isPlaying = false;
     };
 
     // next track
     const nextTrack = () => {
-        if (isEmpty(currentTrack.filename)) {
+        if (isEmpty(currentTrack.filename) || tracks.length <= 1) {
             return;
         }
 
@@ -231,10 +259,30 @@
     const isEmpty = (x) => {
         return [Object, Array].includes((x || {}).constructor) && !Object.entries((x || {})).length;
     }
+
+    // mediaSession API play button
+    navigator.mediaSession.setActionHandler('play', () => {
+        playPauseTrack();
+    });
+
+    // mediaSession API pause button
+    navigator.mediaSession.setActionHandler('pause', () => {
+        playPauseTrack();
+    });
+
+    // mediaSession API previous track button
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+        previousTrack();
+    });
+
+    // mediaSession API next track button
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+        nextTrack();
+    });
 </script>
 
 <main class="flex min-h-screen flex-col justify-between overflow-hidden bg-[#141C24]">
-    <audio controls bind:this={audioElement} on:ended={handleAudioEnded} on:timeupdate={handleTimeUpdate} crossOrigin="anonymous" hidden />
+    <audio controls bind:this={audioElement} on:ended={handleAudioEnded} on:timeupdate={handleTimeUpdate} crossOrigin="anonymous" hidden tabindex="-1"/>
 
     <div class="grid grid-cols-3 gap-3 py-3 px-1 grow">
         <section class="grid place-content-center">
@@ -251,7 +299,7 @@
                 <Svroller alwaysVisible={true} class="p-4" width="1" height="77vh" margin={{ right: 4 }}>
                 <div class="pr-6 space-y-2">
                     {#each tracks as track, i}
-                        <Track on:click={() => currentTrack = track} {currentTrack} {track} {currentColor} {i} />
+                        <Track on:click={() => currentTrack = track} {currentTrack} {track} {currentColor} {i} {isPlaying} />
                     {/each}
                 </div>
                 </Svroller>
@@ -260,7 +308,7 @@
     </div>
 
     <footer class="h-[5rem] w-full bg-[#141820]">
-        <input type="range" title={progress} step={0.00001} min="0" max="100" value={progress} on:input={handleInput} class="rounded-full h-1.5 outline-none cursor-pointer w-full block" style="accent-color: {currentColor.background};" />
+        <input type="range" title={progress} step="0.00001" min="0" max="100" value={progress} on:input={handleInput} class="rounded-full h-1.5 outline-none cursor-pointer w-full block" style="accent-color: {currentColor.background};" tabindex="-1" />
 
         <section class="grid h-full grid-cols-3 items-center gap-4 px-3">
             <div>

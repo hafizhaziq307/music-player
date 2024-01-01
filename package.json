@@ -11,7 +11,7 @@
     "watch": "npx tailwindcss -i ./src/assets/css/input.css -o ./src/assets/css/output.css --watch --minify"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@tabler/icons-svelte": "^2.44.0",
     "@tauri-apps/api": "^1.5.3",
     "svrollbar": "^0.12.0"
   },

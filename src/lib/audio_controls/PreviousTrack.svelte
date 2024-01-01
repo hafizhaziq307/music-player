@@ -1,8 +1,10 @@
 <script>
     export let previousTrack;
+    
+    import { IconPlayerSkipBackFilled } from '@tabler/icons-svelte';
 </script>
 
 <button title="Previous" on:click={previousTrack}>
-    <i class="fa-solid fa-backward-step fa-lg text-white"></i>
+    <IconPlayerSkipBackFilled class="h-6 w-6 text-white"/>
 </button>
 

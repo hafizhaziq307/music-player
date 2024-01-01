@@ -1,12 +1,15 @@
 <script>
     export let isPlaying;
     export let playPauseTrack;
+
+    import { IconPlayerPlayFilled, IconPlayerPauseFilled } from '@tabler/icons-svelte';
 </script>
 
 <button title={isPlaying ? "Pause" : "Play"} on:click={playPauseTrack}>
     {#if isPlaying}
-    <i class="fa-solid fa-pause fa-xl text-white"></i>
+    <IconPlayerPauseFilled class="h-8 w-8 text-white" />
+
     {:else}
-    <i class="fa-solid fa-play fa-xl text-white"></i>
+    <IconPlayerPlayFilled class="h-8 w-8 text-white" />
     {/if}
 </button>

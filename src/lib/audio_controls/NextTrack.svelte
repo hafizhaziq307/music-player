@@ -1,7 +1,9 @@
 <script>
     export let nextTrack;
+
+    import { IconPlayerSkipForwardFilled } from '@tabler/icons-svelte';
 </script>
 
 <button title="Next" on:click={nextTrack}>
-    <i class="fa-solid fa-forward-step fa-lg text-white"></i>
+    <IconPlayerSkipForwardFilled class="h-6 w-6 text-white"/>
 </button>

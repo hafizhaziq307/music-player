@@ -1,10 +1,12 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-
+    import { IconMusic } from '@tabler/icons-svelte';
+    
     export let currentTrack;
     export let track;
     export let currentColor;
     export let i;
+    export let isPlaying;
 
     const dispatch = createEventDispatcher();
 </script>
@@ -15,12 +17,10 @@
 <article id ="music-{i}"
     style="{ currentTrack.path === track.path ? `background-color: ${currentColor.background}; color: ${currentColor.text};` : ''}"
     class="grid cursor-pointer grid-cols-12 items-center gap-2 rounded py-3 px-4 snap-center {currentTrack.path === track.path ? '' : 'text-white hover:bg-gray-800'}"
-    on:click={() => dispatch('click')} >
+    on:click={() => dispatch('click')}>
 
     {#if currentTrack.path === track.path}
-    <div>
-        <i class="fa-solid fa-compact-disc fa-lg text-white animate-spin"></i>
-    </div>
+        <IconMusic class="h-6 w-6 {(isPlaying) ? 'animate-pulse' : '' }"/>
     {/if}
 
     <div class="{currentTrack.path === track.path ? '' : 'font-light'}">
@@ -35,19 +35,3 @@
         {track.artist ?? ''}
     </div>
 </article>
-
-<style>
-    /* .fa-compact-disc {
-        animation: .8s ease-in-out infinite spinner;
-    }
-
-    @keyframes spinner {
-        from {
-            transform: rotate(0deg);
-        }
-
-        to {
-            transform: rotate(1turn);
-        }
-    } */
-</style>
