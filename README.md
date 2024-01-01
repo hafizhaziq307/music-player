@@ -1,8 +1,20 @@
-# Svelte + Vite
+# music-player
+A music player to listen to music. Support mp3 file only.
+ 
+<img src="./res/output.png" alt="music_player" width="70%" height="70%" >
 
-This template should help get you started developing with Tauri and Svelte in Vite.
+---
 
-## Recommended IDE Setup
+## Stack
+It is created using those amazing technologies:
+- [Svelte](https://svelte.dev/)
+- [Tailwind](https://tailwindcss.com/)
+- [Tauri](https://tauri.studio/)
+- And many others!
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+---
 
+## License
+>You can check out the full license [here](https://github.com/hafizhaziq307/music-player/blob/main/LICENSE)
+
+This project is licensed under the terms of the **MIT** license.
