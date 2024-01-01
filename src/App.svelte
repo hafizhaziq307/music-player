@@ -11,8 +11,9 @@
     import { convertFileSrc, invoke } from "@tauri-apps/api/tauri";
     import { open } from "@tauri-apps/api/dialog";
     import { audioDir } from "@tauri-apps/api/path";
-    import { Svroller } from 'svrollbar'
+    import { Svroller } from 'svrollbar';
 
+    import "./assets/js/Vibrant.min.js";
     import logo from "./assets/img/logo.png";
 
     let audioElement;
