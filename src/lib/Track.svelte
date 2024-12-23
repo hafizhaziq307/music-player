@@ -1,26 +1,16 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
+    let {setCurrentTrack, currentTrack, track, currentColor, i, isPlaying} = $props();
     import { IconMusic } from '@tabler/icons-svelte';
-    
-    export let currentTrack;
-    export let track;
-    export let currentColor;
-    export let i;
-    export let isPlaying;
-
-    const dispatch = createEventDispatcher();
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-
-<article id ="music-{i}"
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<article id="music-{i}" onclick={setCurrentTrack}
     style="{ currentTrack.path === track.path ? `background-color: ${currentColor.background}; color: ${currentColor.text};` : ''}"
-    class="grid cursor-pointer grid-cols-12 items-center gap-2 rounded py-3 px-4 snap-center {currentTrack.path === track.path ? '' : 'text-white hover:bg-gray-800'}"
-    on:click={() => dispatch('click')}>
+    class="select-none grid cursor-pointer grid-cols-12 items-center gap-2 rounded-md py-3 px-4 snap-start text-xs md:text-sm lg:text-base {currentTrack.path === track.path ? '' : 'text-white hover:bg-gray-800'}">
 
     {#if currentTrack.path === track.path}
-        <IconMusic class="h-6 w-6 {(isPlaying) ? 'animate-pulse' : '' }"/>
+        <IconMusic class="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 {(isPlaying) ? 'animate-pulse' : '' }"/>
     {/if}
 
     <div class="{currentTrack.path === track.path ? '' : 'font-light'}">

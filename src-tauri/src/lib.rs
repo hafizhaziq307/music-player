@@ -3,7 +3,7 @@ use id3::{Tag, TagLike};
 use base64;
 
 #[tauri::command]
-pub fn get_metadata_files( filename: &str, path: &str) -> Option<Value> {
+fn get_metadata_files( filename: &str, path: &str) -> Option<Value> {
     let file_path:String = path.to_string();
 
     let tag = Tag::read_from_path(file_path).unwrap();
@@ -37,4 +37,15 @@ pub fn get_metadata_files( filename: &str, path: &str) -> Option<Value> {
           "mime_type": &img.mime_type
         }
       }));
+}
+
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![get_metadata_files])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }

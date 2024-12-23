@@ -1,10 +1,8 @@
 <script>
-    export let currentColor;
-    export let openDialog;
-
-    import { IconPlus } from '@tabler/icons-svelte';
+    let {openDialog} = $props();
+    import { IconLibraryPlus } from '@tabler/icons-svelte';
 </script>
 
-<button title="Add Mp3" on:click={openDialog} class="rounded-sm py-0.5 px-1.5" style="background-color: {currentColor.background};">
-    <IconPlus class="h-5 w-5" style="color: {currentColor.text};" />
+<button title="Add Track" onclick={openDialog}>
+    <IconLibraryPlus class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" />
 </button>

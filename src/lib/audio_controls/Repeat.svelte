@@ -1,11 +1,8 @@
 <script>
-    export let loopTrack;
-    export let isLooping;
-    export let currentColor;
-
+    let {loopTrack, isLooping, currentColor} = $props();
     import { IconRepeat } from '@tabler/icons-svelte';
 </script>
 
-<button title="Repeat" on:click={loopTrack} style="background-color: {isLooping ? currentColor.background : 'transparent'};" class="rounded-sm p-1">
-    <IconRepeat class="h-6 w-6" style="color: {isLooping ? currentColor.text : '#fff'};"/>
+<button title="Repeat" onclick={loopTrack} style="background-color: {isLooping ? currentColor.background : 'transparent'};" class="rounded-sm p-1">
+    <IconRepeat class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" style="color: {isLooping ? currentColor.text : '#fff'};"/>
 </button>
