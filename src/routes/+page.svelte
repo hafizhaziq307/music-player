@@ -1,6 +1,5 @@
 <script>
     // @ts-nocheck
-
     import AddTrack from '../lib/audio_controls/AddTrack.svelte';
     import NextTrack from '../lib/audio_controls/NextTrack.svelte';
     import PlayPauseTrack from '../lib/audio_controls/PlayPauseTrack.svelte';
@@ -24,7 +23,7 @@
         IconVolume,
         IconSettings,
         IconBrandGithub,
-        IconVolume3 
+        IconVolume3,
     } from '@tabler/icons-svelte';
     /**
      * @type {HTMLAudioElement}
@@ -58,8 +57,6 @@
         background: '#374151',
         text: 'white',
     });
-
-    let isSidebarOpen = $state(false);
     let sidebar;
     let sidebarOverlay;
     let sidebarContent;
@@ -70,60 +67,62 @@
         sidebarContent.style.transform = 'translateX(-100%)';
     });
 
+    // volume changes
+    $effect(() => {
+        audioElement.volume = 0.01 * volume;
+    });
+
     // track changes
     $effect(() => {
         if (!isEmpty(currentTrack.path)) {
             progress = 0;
             audioElement.src = convertFileSrc(currentTrack.path);
-
-            const thumbnail = !currentTrack.image.data
-                ? logo
-                : `data:${currentTrack.image.mime_type};base64,${currentTrack.image.data}`;
-            thumbnailElement.src = thumbnail;
-
+            updateThumbnail(currentTrack);
+            $effect(() => updateCurrentIndex());
+            updateMediaSession(currentTrack, thumbnailElement.src);
             playTrack();
-            updateCurrentIndex();
+        }
+    });
 
-            thumbnailElement.onload = function () {
-                if (thumbnail == logo) {
-                    currentColor = {
-                        background: '#374151',
-                        text: 'white',
-                    };
-                    return;
-                }
+    const updateThumbnail = (currentTrack) => {
+        const thumbnail = currentTrack.image.data
+            ? `data:${currentTrack.image.mime_type};base64,${currentTrack.image.data}`
+            : logo;
 
-                const swatches = new Vibrant(thumbnailElement).swatches();
+        thumbnailElement.src = thumbnail;
+
+        thumbnailElement.onload = function () {
+            if (thumbnail == logo) {
                 currentColor = {
-                    background: swatches.Vibrant.getHex(),
-                    text: swatches.Vibrant.getBodyTextColor(),
+                    background: '#374151',
+                    text: 'white',
                 };
+                return;
+            }
+
+            const swatches = new Vibrant(thumbnailElement).swatches();
+            currentColor = {
+                background: swatches.Vibrant.getHex(),
+                text: swatches.Vibrant.getBodyTextColor(),
             };
+        };
+    };
 
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentTrack.title ?? currentTrack.filename,
-                artist: currentTrack.artist ?? '',
-                artwork: [
-                    {
-                        src: thumbnailElement.src,
-                        sizes: '512x512',
-                        type: !currentTrack.image.data
-                            ? 'image/png'
-                            : currentTrack.image.mime_type,
-                    },
-                ],
-            });
-        }
-
-       
-    });
-
-    // volume changes
-    $effect(() => {
-        if (!isEmpty(audioElement)) {
-            audioElement.volume = 0.01 * volume;
-        }
-    });
+    const updateMediaSession = (currentTrack, src) => {
+        new MediaMetadata({
+            title: currentTrack.title ?? currentTrack.filename,
+            artist: currentTrack.artist ?? '',
+            artwork: [
+                {
+                    src: src,
+                    sizes: '512x512',
+                    type: !currentTrack.image.data
+                        ? 'image/png'
+                        : currentTrack.image.mime_type,
+                },
+            ],
+        });
+    };
 
     const openDialog = async () => {
         const paths = await open({
@@ -162,29 +161,34 @@
 
     const playTrack = () => {
         if (isEmpty(currentTrack.filename)) return;
-
         navigator.mediaSession.playbackState = 'playing';
-
         audioElement.play();
         isPlaying = true;
     };
 
+    const pauseTrack = () => {
+        if (isEmpty(currentTrack.filename)) return;
+        navigator.mediaSession.playbackState = 'paused';
+        audioElement.pause();
+        isPlaying = false;
+    };
+
     const previousTrack = () => {
         if (isEmpty(currentTrack.filename) || tracks.length <= 1) return;
-
         currentIndex--;
-
         if (currentIndex < 0) {
             currentIndex = tracks.length - 1;
         }
-
         currentTrack = tracks[currentIndex];
     };
 
-    const loopTrack = () => {
-        if (isEmpty(currentTrack.filename)) return;
-        isLooping = !isLooping;
-        audioElement.loop = isLooping;
+    const nextTrack = () => {
+        if (isEmpty(currentTrack.filename) || tracks.length <= 1) return;
+        currentIndex++;
+        if (currentIndex > tracks.length - 1) {
+            currentIndex = 0;
+        }
+        currentTrack = tracks[currentIndex];
     };
 
     const shuffleTrack = () => {
@@ -192,25 +196,10 @@
         isShuffling = !isShuffling;
     };
 
-    const pauseTrack = () => {
+    const loopTrack = () => {
         if (isEmpty(currentTrack.filename)) return;
-
-        navigator.mediaSession.playbackState = 'paused';
-
-        audioElement.pause();
-        isPlaying = false;
-    };
-
-    const nextTrack = () => {
-        if (isEmpty(currentTrack.filename) || tracks.length <= 1) return;
-
-        currentIndex++;
-
-        if (currentIndex > tracks.length - 1) {
-            currentIndex = 0;
-        }
-
-        currentTrack = tracks[currentIndex];
+        isLooping = !isLooping;
+        audioElement.loop = isLooping;
     };
 
     const updateCurrentIndex = () => {
@@ -256,9 +245,7 @@
             translateX: 0,
             duration: 250,
             easing: 'easeInOutCubic',
-            begin: () => {
-                sidebar.classList.remove('hidden');
-            },
+            begin: () => sidebar.classList.remove('hidden'),
         });
     };
 
@@ -269,9 +256,7 @@
             translateX: '-100%',
             duration: 250,
             easing: 'easeInOutCubic',
-            complete: () => {
-                sidebar.classList.add('hidden');
-            },
+            complete: () => sidebar.classList.add('hidden'),
         });
     };
 
@@ -294,15 +279,15 @@
 ></audio>
 
 <main class="flex min-h-screen w-screen flex-col justify-between bg-[#141C24]">
-    <div class=" flex-grow grid grid-cols-3 gap-2">
-        <div class="content-center mx-auto pl-2">
+    <div class="grid flex-grow grid-cols-3 gap-2">
+        <div class="mx-auto content-center pl-2">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <img
                 bind:this={thumbnailElement}
                 src={logo}
                 alt="img"
-                class="select-none aspect-square w-[15rem] rounded-lg object-cover object-center lg:w-[20rem] cursor-pointer"
+                class="aspect-square w-[15rem] cursor-pointer select-none rounded-lg object-cover object-center lg:w-[20rem]"
                 onclick={() => {
                     if (currentIndex !== undefined) {
                         document
@@ -318,28 +303,29 @@
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <div
                     bind:this={sidebarOverlay}
-                    class="fixed inset-0 bg-black/60 z-10"
+                    class="fixed inset-0 z-10 bg-black/60"
                     onclick={closeSidebar}
                 ></div>
                 <!-- sidebar overlay -->
                 <div
                     bind:this={sidebarContent}
-                    class="fixed left-0 top-0 h-full w-60 bg-[#141820] z-20"
+                    class="fixed left-0 top-0 z-20 h-full w-60 bg-[#141820]"
                 >
                     <!-- sidebar content -->
                     <header class="flex justify-between gap-2 p-2">
-                        <a title="Github"
+                        <a
+                            title="Github"
                             href="https://github.com/hafizhaziq307/music-player"
                             target="_blank"
                         >
                             <IconBrandGithub
-                                class="w-7 md:h-7 lg:w-8 lg:h-8 text-white"
+                                class="w-7 text-white md:h-7 lg:h-8 lg:w-8"
                             />
                         </a>
 
                         <button title="Close" onclick={closeSidebar}>
                             <IconX
-                                class="w-7 md:h-7 lg:w-8 lg:h-8 text-white"
+                                class="w-7 text-white md:h-7 lg:h-8 lg:w-8"
                             />
                         </button>
                     </header>
@@ -347,11 +333,11 @@
                         <div class="flex items-center gap-2">
                             {#if volume == 0}
                                 <IconVolume3
-                                    class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white"
+                                    class="h-6 w-6 text-white md:h-7 md:w-7 lg:h-8 lg:w-8"
                                 />
                             {:else}
                                 <IconVolume
-                                    class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white"
+                                    class="h-6 w-6 text-white md:h-7 md:w-7 lg:h-8 lg:w-8"
                                 />
                             {/if}
                             <input
@@ -362,7 +348,7 @@
                                 oninput={(event) => {
                                     volume = event.target.value;
                                 }}
-                                class="h-1 cursor-pointer rounded-full w-full"
+                                class="h-1 w-full cursor-pointer rounded-full"
                                 style="accent-color: {currentColor.background};"
                             />
                             <!-- volume = event.detail.volume -->
@@ -370,6 +356,7 @@
                     </div>
                 </div>
             </div>
+            <!-- End Sidebar -->
         </div>
 
         <div
@@ -383,7 +370,7 @@
                 margin={{ right: 4 }}
             >
                 <div
-                    class="snap-y snap-mandatory space-y-4 scroll-py-4 py-4 pr-4"
+                    class="snap-y snap-mandatory scroll-py-4 space-y-4 py-4 pr-4"
                 >
                     {#each tracks as track, i}
                         <Track
@@ -414,7 +401,7 @@
         />
 
         <section
-            class="grid h-full grid-cols-4 items-center gap-4 px-3 lg:px-12 py-2 bg-[#141820]"
+            class="grid h-full grid-cols-4 items-center gap-4 bg-[#141820] px-3 py-2 lg:px-12"
         >
             <div>
                 <div class="truncate text-lg font-light text-white">
@@ -428,7 +415,7 @@
             </div>
 
             <div
-                class="flex items-center justify-center gap-6 lg:gap-10 col-span-2"
+                class="col-span-2 flex items-center justify-center gap-6 lg:gap-10"
             >
                 <Repeat {isLooping} {loopTrack} {currentColor} />
                 <PreviousTrack {previousTrack} />
@@ -442,7 +429,7 @@
 
                 <button title="Settings" onclick={openSidebar}>
                     <IconSettings
-                        class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white"
+                        class="h-6 w-6 text-white md:h-7 md:w-7 lg:h-8 lg:w-8"
                     />
                 </button>
             </div>
