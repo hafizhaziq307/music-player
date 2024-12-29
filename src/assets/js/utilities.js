@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 export const isEmpty = (x) => {
     return (
         [Object, Array].includes((x || {}).constructor) &&

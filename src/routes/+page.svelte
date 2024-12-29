@@ -207,7 +207,6 @@
         if (res !== -1) currentIndex = res;
     };
 
-    // handle after audio ended
     const handleAudioEnded = () => {
         if (isShuffling) {
             const newIndex = Math.floor(Math.random() * tracks.length + 1);
@@ -351,7 +350,6 @@
                                 class="h-1 w-full cursor-pointer rounded-full"
                                 style="accent-color: {currentColor.background};"
                             />
-                            <!-- volume = event.detail.volume -->
                         </div>
                     </div>
                 </div>

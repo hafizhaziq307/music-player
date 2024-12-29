@@ -39,7 +39,6 @@ fn get_metadata_files( filename: &str, path: &str) -> Option<Value> {
       }));
 }
 
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()

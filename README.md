@@ -1,7 +1,7 @@
 # music-player
-A music player to listen to music. Support mp3 file only.
+A music player to play music. Supports MP3 files only
  
-<img src="./res/output.png" alt="music_player" width="70%" height="70%" >
+<img src="./res/output.png" alt="img" width="70%" height="70%" >
 
 ---
 
@@ -9,7 +9,7 @@ A music player to listen to music. Support mp3 file only.
 It is created using those amazing technologies:
 - [Svelte](https://svelte.dev/)
 - [Tailwind](https://tailwindcss.com/)
-- [Tauri](https://tauri.studio/)
+- [Tauri](https://tauri.app/)
 - And many others!
 
 ---
