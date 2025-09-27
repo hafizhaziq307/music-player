@@ -1,6 +1,6 @@
 use serde_json::Value;
 use id3::{Tag, TagLike};
-use base64;
+use base64::{engine::general_purpose, Engine as _};
 
 #[tauri::command]
 fn get_metadata_files( filename: &str, path: &str) -> Option<Value> {
@@ -33,7 +33,7 @@ fn get_metadata_files( filename: &str, path: &str) -> Option<Value> {
         "title": title,
         "artist": artist,
         "image": {
-          "data": base64::encode(&img.data),
+          "data": general_purpose::STANDARD.encode(&img.data),
           "mime_type": &img.mime_type
         }
       }));

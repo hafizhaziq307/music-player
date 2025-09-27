@@ -278,7 +278,7 @@
 ></audio>
 
 <main class="flex min-h-screen w-screen flex-col justify-between bg-[#141C24]">
-    <div class="grid flex-grow grid-cols-3 gap-2">
+    <div class="grid grow grid-cols-3 gap-2">
         <div class="mx-auto content-center pl-2">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -286,7 +286,7 @@
                 bind:this={thumbnailElement}
                 src={logo}
                 alt="img"
-                class="aspect-square w-[15rem] cursor-pointer select-none rounded-lg object-cover object-center lg:w-[20rem]"
+                class="aspect-square w-60 cursor-pointer select-none rounded-lg object-cover object-center lg:w-[20rem]"
                 onclick={() => {
                     if (currentIndex !== undefined) {
                         document
@@ -393,7 +393,7 @@
             max="100"
             value={progress}
             oninput={handleInput}
-            class="h-1.5 w-full cursor-pointer rounded-full outline-none"
+            class="h-1.5 w-full cursor-pointer rounded-full outline-hidden"
             style="accent-color: {currentColor.background};"
             tabindex="-1"
         />
