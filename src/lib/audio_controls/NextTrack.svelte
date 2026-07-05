@@ -1,8 +1,8 @@
 <script>
-    let {nextTrack} = $props();
+    let { nextTrack } = $props();
     import { IconPlayerSkipForwardFilled } from '@tabler/icons-svelte';
 </script>
 
 <button title="Next Track" onclick={nextTrack}>
-    <IconPlayerSkipForwardFilled class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white"/>
+    <IconPlayerSkipForwardFilled class="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-white" />
 </button>

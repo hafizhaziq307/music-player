@@ -1,5 +1,5 @@
 <script>
-    let {openDialog} = $props();
+    let { openDialog } = $props();
     import { IconLibraryPlus } from '@tabler/icons-svelte';
 </script>
 
